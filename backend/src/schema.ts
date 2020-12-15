@@ -1,4 +1,4 @@
-import { userSchema } from './user/user.schema';
+import { userSchema } from './user/schema/user.schema';
 
 const schemas = [userSchema];
 

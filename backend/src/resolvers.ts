@@ -1,4 +1,4 @@
-import { userResolver } from './user/user.resolver';
+import { userResolver } from './user/resolvers/user.resolver';
 
 const resolvers = [userResolver];
 
