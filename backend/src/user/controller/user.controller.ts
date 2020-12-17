@@ -1,15 +1,13 @@
 import { User, UserInput } from "../user.model";
-import { users } from "./user.data";
-import logger from "../../utils/logger";
 import { v4 as uuidv4 } from "uuid";
 
+const users: User[] = [];
 const userController = {
   getAll: async (): Promise<User[]> => users,
   create: async (input: UserInput): Promise<User> => {
-    const id = uuidv4();
     const user = {
       name: input.name,
-      id: id,
+      id: uuidv4(),
     };
     users.push(user);
     return user;
@@ -28,6 +26,17 @@ const userController = {
       users.splice(index, 1);
     }
     return user;
+  },
+  edit: async (updatedUser: User): Promise<User> => {
+    const index = users.findIndex((user) => {
+      return updatedUser.id === user.id;
+    });
+    if (index > -1) {
+      users[index].name = updatedUser.name;
+      return users[index];
+    } else {
+      console.error(`can't edit user ${JSON.stringify(updatedUser)}`);
+    }
   },
 };
 
