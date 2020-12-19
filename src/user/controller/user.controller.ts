@@ -1,5 +1,6 @@
 import { User, UserInput } from "../user.model";
 import { v4 as uuidv4 } from "uuid";
+import { UserInputError } from "apollo-server";
 
 const users: User[] = [];
 const userController = {
@@ -36,6 +37,9 @@ const userController = {
       return users[index];
     } else {
       console.error(`can't edit user ${JSON.stringify(updatedUser)}`);
+      throw new UserInputError("edit user arguments invalid", {
+        invalidArgs: updatedUser,
+      });
     }
   },
 };

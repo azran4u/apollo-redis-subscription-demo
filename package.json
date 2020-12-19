@@ -4,7 +4,8 @@
   "description": "apollo graphql server with redis based subscription",
   "main": "/dist/intex.js",
   "scripts": {
-    "start": "tsc && node dist/server.js",
+    "start": "npm run build && node dist/server.js",
+    "build": "tsc",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts"
   },
   "author": "",
