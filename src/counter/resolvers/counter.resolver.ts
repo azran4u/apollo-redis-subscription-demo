@@ -5,6 +5,8 @@ import {
   decrementCounter,
   resetCounter,
 } from "./mutation.resolver";
+import pubsub from "./pubsub";
+import { COUNTER_CHNAGED } from "./subscription.events";
 
 const counterResolver: IResolvers = {
   Query: {
@@ -14,6 +16,11 @@ const counterResolver: IResolvers = {
     incrementCounter,
     decrementCounter,
     resetCounter,
+  },
+  Subscription: {
+    counterChanged: {
+      subscribe: () => pubsub.asyncIterator([COUNTER_CHNAGED]),
+    },
   },
 };
 

@@ -1,6 +1,8 @@
 import { IFieldResolver } from "graphql-tools";
 import { counterController } from "../controller/counter.controller";
 import { CounterContext } from "../counter.context";
+import pubsub from "./pubsub";
+import { COUNTER_CHNAGED } from "./subscription.events";
 
 export const incrementCounter: IFieldResolver<any, CounterContext> = async (
   source,
@@ -8,7 +10,9 @@ export const incrementCounter: IFieldResolver<any, CounterContext> = async (
   context,
   info
 ) => {
-  return await counterController.increment();
+  const res = await counterController.increment();
+  pubsub.publish(COUNTER_CHNAGED, { counterChanged: res });
+  return res;
 };
 
 export const decrementCounter: IFieldResolver<any, CounterContext> = async (
@@ -17,7 +21,9 @@ export const decrementCounter: IFieldResolver<any, CounterContext> = async (
   context,
   info
 ) => {
-  return await counterController.decrement();
+  const res = await counterController.decrement();
+  pubsub.publish(COUNTER_CHNAGED, { counterChanged: res });
+  return res;
 };
 
 export const resetCounter: IFieldResolver<any, CounterContext> = async (
@@ -26,5 +32,9 @@ export const resetCounter: IFieldResolver<any, CounterContext> = async (
   context,
   info
 ) => {
-  return await counterController.reset();
+  const res = await counterController.reset();
+  pubsub.publish(COUNTER_CHNAGED, {
+    counterChanged: res,
+  });
+  return res;
 };
