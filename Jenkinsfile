@@ -40,6 +40,8 @@ node {
          sh "sed -i 's/SERVICE_NAME/${SERVICE_NAME}/g' k8s/${SERVICE_NAME}.yaml"
          sh "sed -i 's/SERVICE_PORT/${SERVICE_PORT}/g' k8s/${SERVICE_NAME}.yaml"
          sh "cat k8s/${SERVICE_NAME}.yaml"
+         sh "kubectl delete deployment/${SERVICE_NAME}-deployment"
+         sh "kubectl delete service/${SERVICE_NAME}-service"
          sh "kubectl apply -f k8s/${SERVICE_NAME}.yaml --namespace ${NAMESPACE}"
       }
    }
