@@ -15,9 +15,9 @@ async function dbTriggerRegistration(): Promise<Observable<Counter>> {
     password: "admin123",
     port: 5432 || Number.parseInt(process.env.DATABASE_PORT),
   };
-  const pgClient = new Client(dbConfig);
+  logger.info(`db config = ${JSON.stringify(dbConfig, null, 4)}`);
 
-  logger.info(`db config = ${dbConfig}`);
+  const pgClient = new Client(dbConfig);
 
   await pgClient.connect();
   logger.info("connected to db");
