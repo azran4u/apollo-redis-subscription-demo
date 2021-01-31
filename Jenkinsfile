@@ -1,5 +1,6 @@
 #!groovy
 
+/* groovylint-disable-next-line CompileStatic */
 SERVICE_NAME = 'graphql-server'
 SERVICE_PORT = '4000'
 IMAGE_NAME = "eyala/${SERVICE_NAME}:${BUILD_NUMBER}"
@@ -24,6 +25,7 @@ node {
    }
 
    stage('Build Docker image and Push') {
+      /* groovylint-disable-next-line LineLength */
       withCredentials([usernamePassword(credentialsId:'94e3417c-5722-40d5-a852-93227cb2ad68', passwordVariable:'DOCKERHUB_PASS', usernameVariable:'DOCKERHUB_USER')]) {
             if ("${env.BRANCH_NAME}" == 'master') {
             sh "docker login -u ${DOCKERHUB_USER} -p ${DOCKERHUB_PASS}"
@@ -35,6 +37,7 @@ node {
    }
 
    stage('Deploy to Kubernetes') {
+      /* groovylint-disable-next-line DuplicateStringLiteral */
       if ("${env.BRANCH_NAME}" == 'master') {
          sh "sed -i 's/BUILD_NUMBER/${BUILD_NUMBER}/g' k8s/${SERVICE_NAME}.yaml"
          sh "sed -i 's/SERVICE_NAME/${SERVICE_NAME}/g' k8s/${SERVICE_NAME}.yaml"
@@ -46,6 +49,7 @@ node {
       }
    }
 
+   /* groovylint-disable-next-line DuplicateStringLiteral */
    stage ('Clean Workspace') {
       deleteDir()
    }
