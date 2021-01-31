@@ -1,7 +1,7 @@
 #!groovy
 
 SERVICE_NAME = 'graphql-server'
-SERVICE_PORT = '8082'
+SERVICE_PORT = '4000'
 IMAGE_NAME = "eyala/${SERVICE_NAME}:${BUILD_NUMBER}"
 NAMESPACE = 'dev'
 
