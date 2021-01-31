@@ -8,13 +8,16 @@ import { debounce, debounceTime, delay, tap } from "rxjs/operators";
 import { COUNTER_CHNAGED } from "../resolvers/subscription.events";
 
 async function dbTriggerRegistration(): Promise<Observable<Counter>> {
-  const pgClient = new Client({
+  const dbConfig = {
     user: "postgresadmin",
-    host: "127.0.0.1",
+    host: "127.0.0.1" || process.env.DATABASE_HOST,
     database: "postgresdb",
     password: "admin123",
-    port: 5432,
-  });
+    port: 5432 || Number.parseInt(process.env.DATABASE_PORT),
+  };
+  const pgClient = new Client(dbConfig);
+
+  logger.info(`db config = ${dbConfig}`);
 
   await pgClient.connect();
   logger.info("connected to db");
