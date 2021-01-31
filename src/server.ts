@@ -1,14 +1,21 @@
 import logger from "./utils/logger";
-import { GraphQLSchema } from "graphql";
-import { mergeSchemas } from "graphql-tools";
 import schemas from "./schema";
 import express from "express";
 import http from "http";
 import { ApolloServer } from "apollo-server-express";
+import { wsNotify } from "./counter/trigger/trigger";
 
 const PORT = 4000;
 const app = express();
 
+wsNotify().then(
+  () => {
+    logger.info("ws triggers");
+  },
+  (error) => {
+    logger.error(error);
+  }
+);
 const server = new ApolloServer({
   schema: schemas,
   subscriptions: {
@@ -35,30 +42,3 @@ httpServer.listen(PORT, () => {
     `🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
   );
 });
-
-// const schema: GraphQLSchema = mergeSchemas({
-//   schemas,
-//   resolvers,
-// });
-
-// // GraphQL
-// const server = new ApolloServer({
-//   schema,
-//   context: async ({ req }: any) => {
-//     if (!req || !req.headers) {
-//       logger.info("no request");
-//       return;
-//     }
-//   },
-//   subscriptions: {
-//     onConnect: (connectionParams, webSocket) => {
-//       console.log(`ws connected`);
-//     },
-//   },
-//   tracing: false,
-// });
-
-// server.listen().then(({ url, subscriptionsUrl }) => {
-//   console.log(`🚀 Server ready at ${url}`);
-//   console.log(`🚀 Subscriptions ready at ${subscriptionsUrl}`);
-// });
