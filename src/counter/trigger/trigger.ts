@@ -4,24 +4,49 @@ import { counterController } from "../controller/counter.controller";
 import pubsub from "../resolvers/pubsub";
 import { Observable } from "rxjs";
 import { Counter } from "../counter.model";
-import { debounce, debounceTime, delay, tap } from "rxjs/operators";
+import { debounceTime, tap } from "rxjs/operators";
 import { COUNTER_CHNAGED } from "../resolvers/subscription.events";
 
 async function dbTriggerRegistration(): Promise<Observable<Counter>> {
-  const dbConfig = {
+  const azurePrimaryDbConfig = {
+    user: "eyala@live-query-poc",
+    host:
+      "live-query-poc.postgres.database.azure.com" || process.env.DATABASE_HOST,
+    database: "live_query_poc",
+    password: "aA123456",
+    port: 5432 || Number.parseInt(process.env.DATABASE_PORT),
+  };
+
+  const azureReplica1DbConfig = {
+    user: "eyala@live-query-poc",
+    host:
+      "live-query-poc-replica-1.postgres.database.azure.com" ||
+      process.env.DATABASE_HOST,
+    database: "live_query_poc",
+    password: "aA123456",
+    port: 5432 || Number.parseInt(process.env.DATABASE_PORT),
+  };
+
+  const localhostDbConfig = {
     user: "postgresadmin",
     host: "127.0.0.1" || process.env.DATABASE_HOST,
     database: "postgresdb",
     password: "admin123",
     port: 5432 || Number.parseInt(process.env.DATABASE_PORT),
   };
+
+  const dbConfig =
+    process.env.DB_NAME === "PRIMARY"
+      ? azurePrimaryDbConfig
+      : azureReplica1DbConfig;
+
   logger.info(`db config = ${JSON.stringify(dbConfig, null, 4)}`);
 
   const pgClient = new Client(dbConfig);
 
   await pgClient.connect();
   logger.info("connected to db");
-  await pgClient.query("LISTEN new_testevent");
+  await pgClient.query("LISTEN books_table_insert");
 
   return new Observable((subscriber) => {
     pgClient.on("notification", async (msg) => {

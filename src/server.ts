@@ -4,8 +4,24 @@ import express from "express";
 import http from "http";
 import { ApolloServer } from "apollo-server-express";
 import { wsNotify } from "./counter/trigger/trigger";
+import { Injector } from "./injector";
+import { Database } from "./db/connection";
+import { PRIMARY_DB_CONFIG } from "./config";
+import { createMockData } from "./db/createMockData";
+import { saveMockDataToDb } from "./db/save/saveMockDataToDb";
 
-const PORT = 4000;
+(async () => {
+  const injector = Injector.getInstance();
+
+  injector.addService(Database, PRIMARY_DB_CONFIG);
+  const primaryDB = injector.getService<Database>(Database);
+  await primaryDB.init();
+
+  const mock = createMockData();
+  await saveMockDataToDb(mock);
+})();
+
+const PORT = +process.env.GRAPHQL_PORT || 4000;
 const app = express();
 
 wsNotify().then(

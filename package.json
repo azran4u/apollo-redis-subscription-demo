@@ -5,6 +5,8 @@
   "main": "/dist/intex.js",
   "scripts": {
     "start": "npm run build && node dist/server.js",
+    "start:primary": "cross-env GRAPHQL_PORT=4001 DB_NAME=PRIMARY node dist/server.js",
+    "start:secondary": "cross-env GRAPHQL_PORT=4002 DB_NAME=SECONDARY node dist/server.js",
     "build": "tsc",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts"
   },
@@ -12,15 +14,18 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^13.13.36",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.6",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@types/faker": "^5.1.6",
     "@types/pg": "^7.14.9",
     "apollo-server": "^2.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "faker": "^5.4.0",
     "graphql": "^14.7.0",
     "graphql-tools": "^4.0.8",
     "pg": "^8.5.1",
