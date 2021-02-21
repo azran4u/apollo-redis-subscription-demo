@@ -1,24 +1,46 @@
-import logger from "./utils/logger";
-import schemas from "./schema";
-import express from "express";
-import http from "http";
-import { ApolloServer } from "apollo-server-express";
-import { wsNotify } from "./counter/trigger/trigger";
-import { Injector } from "./injector";
-import { Database } from "./db/connection";
-import { PRIMARY_DB_CONFIG } from "./config";
-import { createMockData } from "./db/createMockData";
-import { saveMockDataToDb } from "./db/save/saveMockDataToDb";
+import { logger } from './utils';
+import schemas from './graphql/schema';
+import express from 'express';
+import http from 'http';
+import { ApolloServer } from 'apollo-server-express';
+import { wsNotify } from './counter/trigger/trigger';
+import { Injector } from './utils/injector';
+import { Database } from './db/connection/connection';
+import { PRIMARY_DB_CONFIG } from './config';
+import { createMockData } from './db/mock/createMockData';
+import { saveMockDataToDb } from './db/mock/saveMockDataToDb';
+import { getRedaersWithBooksAndAuthorsInTimeFrame } from './db/read/getRedaersWithBooksAndAuthorsInTimeFrame';
+import { hashObject } from './diff/node-object-hash';
 
 (async () => {
-  const injector = Injector.getInstance();
+  try {
+    const injector = Injector.getInstance();
 
-  injector.addService(Database, PRIMARY_DB_CONFIG);
-  const primaryDB = injector.getService<Database>(Database);
-  await primaryDB.init();
+    injector.addService(Database, PRIMARY_DB_CONFIG);
+    const primaryDB = injector.getService<Database>(Database);
+    await primaryDB.init();
 
-  const mock = createMockData();
-  await saveMockDataToDb(mock);
+    // const mock = createMockData();
+    // await saveMockDataToDb(mock);
+
+    const resa = await getRedaersWithBooksAndAuthorsInTimeFrame({
+      from: new Date(2019, 1, 1),
+      to: new Date(2020, 1, 1),
+    });
+    const resah = hashObject(resa);
+    logger.info(resah);
+
+    const resb = await getRedaersWithBooksAndAuthorsInTimeFrame({
+      from: new Date(2019, 1, 1),
+      to: new Date(2020, 1, 1),
+    });
+    const resbh = hashObject(resb);
+    logger.info(resbh);
+
+    logger.info(`equal = ${resah === resbh}`);
+  } catch (error) {
+    logger.error(`error in init ${error}`);
+  }
 })();
 
 const PORT = +process.env.GRAPHQL_PORT || 4000;
@@ -26,11 +48,11 @@ const app = express();
 
 wsNotify().then(
   () => {
-    logger.info("ws triggers");
+    logger.info('ws triggers');
   },
   (error) => {
     logger.error(error);
-  }
+  },
 );
 const server = new ApolloServer({
   schema: schemas,
@@ -52,9 +74,9 @@ server.installSubscriptionHandlers(httpServer);
 // ⚠️ Pay attention to the fact that we are calling `listen` on the http server variable, and not on `app`.
 httpServer.listen(PORT, () => {
   console.log(
-    `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
+    `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`,
   );
   console.log(
-    `🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
+    `🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`,
   );
 });

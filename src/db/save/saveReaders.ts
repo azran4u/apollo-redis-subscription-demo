@@ -1,6 +1,6 @@
-import { Injector } from "../../injector";
+import { Injector } from "../../utils/injector";
 import { Reader } from "../../model/reader";
-import logger from "../../utils/logger";
+import {logger} from "../../utils";
 import { Database } from "../connection";
 
 export async function saveReaders(data: Reader[]) {

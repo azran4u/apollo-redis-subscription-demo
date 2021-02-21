@@ -13,7 +13,7 @@ const PROD_LOG_LEVEL = LoggerLevel.error;
 const DEV_LOG_LEVEL = LoggerLevel.debug;
 const LOG_FILE = LoggerLevel.error;
 
-const logger = createLogger({
+export const logger = createLogger({
 	format: combine(
 		format.colorize(),
 		format.splat(),
@@ -32,4 +32,3 @@ const logger = createLogger({
 if (process.env.NODE_ENV !== "production") {
 	logger.debug("Logging initialized at debug level");
 }
-export default logger;

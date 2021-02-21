@@ -1,9 +1,9 @@
-import { Injector } from "../../injector";
-import logger from "../../utils/logger";
+import { Injector } from "../../utils/injector";
+import {logger} from "../../utils";
 import { Database } from "../connection";
-import { Relation } from "../createMockData";
+import { EntityRelation } from "../../model";
 
-export async function saveBookAuthorRelation(data: Relation[]) {
+export async function saveBookAuthorRelation(data: EntityRelation[]) {
   const client = Injector.getInstance()
     .getService<Database>(Database)
     .getClient();

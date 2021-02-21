@@ -1,6 +1,6 @@
-import { Injector } from "../../injector";
+import { Injector } from "../../utils/injector";
 import { Author } from "../../model/author";
-import logger from "../../utils/logger";
+import {logger} from "../../utils";
 import { Database } from "../connection";
 
 export async function saveAuthors(data: Author[]) {

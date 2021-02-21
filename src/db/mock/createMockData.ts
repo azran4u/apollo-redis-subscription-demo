@@ -1,26 +1,13 @@
-import { Book } from "../model/book";
+import faker from 'faker';
+import {
+  Book,
+  Author,
+  Reader,
+  TimeRange,
+  EntityRelation,
+  MockData,
+} from '../../model';
 
-import faker from "faker";
-import { Author } from "../model/author";
-import { Reader } from "../model/reader";
-
-interface Range {
-  from: Date;
-  to: Date;
-}
-
-export interface Relation {
-  a: number;
-  b: number;
-}
-
-export interface MockData {
-  books: Book[];
-  authors: Author[];
-  readers: Reader[];
-  book_author: Relation[];
-  reader_book: Relation[];
-}
 export function createMockData(): MockData {
   const numOfBooks = 100;
   const numOfAuthors = 100;
@@ -34,11 +21,11 @@ export function createMockData(): MockData {
   let authorSeq = 1;
   let readerSeq = 1;
 
-  const wideRange: Range = {
+  const wideRange: TimeRange = {
     from: new Date(2010, 1, 1),
     to: new Date(2020, 1, 1),
   };
-  const specificRange: Range = {
+  const specificRange: TimeRange = {
     from: new Date(2019, 1, 1),
     to: new Date(2020, 1, 1),
   };
@@ -55,15 +42,21 @@ export function createMockData(): MockData {
 
   const readers: Reader[] = [];
   for (var i = 0; i < numOfReadersWide; i++) {
-    readers.push(createMockReader(readerSeq++, wideRange.from, wideRange.to));
+    readers.push(
+      createMockReader(readerSeq++, wideRange.from, wideRange.to),
+    );
   }
   for (var i = 0; i < numOfReadersSpecific; i++) {
     readers.push(
-      createMockReader(readerSeq++, specificRange.from, specificRange.to)
+      createMockReader(
+        readerSeq++,
+        specificRange.from,
+        specificRange.to,
+      ),
     );
   }
 
-  const book_author: Relation[] = [];
+  const book_author: EntityRelation[] = [];
   for (const book of books.values()) {
     for (var i = 0; i < numOfAuthorsPerBook; i++) {
       book_author.push({
@@ -73,7 +66,7 @@ export function createMockData(): MockData {
     }
   }
 
-  const reader_book: Relation[] = [];
+  const reader_book: EntityRelation[] = [];
   for (const reader of readers.values()) {
     for (var i = 0; i < numOfBooksPerReader; i++) {
       reader_book.push({
@@ -106,7 +99,11 @@ function createMockAuthor(id: number): Author {
   };
 }
 
-function createMockReader(id: number, start: Date, end: Date): Reader {
+function createMockReader(
+  id: number,
+  start: Date,
+  end: Date,
+): Reader {
   return {
     id: id,
     name: faker.name.firstName(),
