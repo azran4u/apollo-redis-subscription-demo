@@ -1,11 +1,75 @@
 import { Client } from 'pg';
-import { logger } from '../../utils';
-import { counterController } from '../controller/counter.controller';
-import pubsub from '../resolvers/pubsub';
+import { logger, Injector } from '../../utils';
+import { counterController } from '../../counter/controller/counter.controller';
+import pubsub from '../../counter/resolvers/pubsub';
 import { Observable } from 'rxjs';
-import { Counter } from '../counter.model';
+import { Counter } from '../../counter/counter.model';
 import { debounceTime, tap } from 'rxjs/operators';
-import { COUNTER_CHNAGED } from '../resolvers/subscription.events';
+import { COUNTER_CHNAGED } from '../../counter/resolvers/subscription.events';
+import { Database } from '../connection';
+
+export async function createTriggerFunction(
+  schema: string,
+  table: string,
+) {
+  const client = Injector.getInstance()
+    .getService<Database>(Database)
+    .getClient();
+
+  const name = `${schema}.${table}`;
+  const queryText = `
+        create or replace function ${name}_notify()
+        returns trigger
+        language plpgsql as 
+          $function$
+            begin
+              perform pg_notify('${name}_changed', '');
+              return NULL;
+            end;
+          $function$
+      `;
+  try {
+    await client.query(queryText);
+  } catch (error) {
+    logger.error(`createTriggerFunction failed ${error}`);
+    throw error;
+  }
+}
+
+export async function createTrigger(schema: string, table: string) {
+  const client = Injector.getInstance()
+    .getService<Database>(Database)
+    .getClient();
+
+  const name = `${schema}.${table}`;
+  const queryText = `
+        create trigger ${schema}_${table}_changed_trigger after insert or update or delete on ${name} 
+        for each row execute procedure ${name}_notify();
+      `;
+  try {
+    await client.query(queryText);
+  } catch (error) {
+    logger.error(`createTrigger failed ${queryText} ${error}`);
+    throw error;
+  }
+}
+
+export async function removeTrigger(schema: string, table: string) {
+  const client = Injector.getInstance()
+    .getService<Database>(Database)
+    .getClient();
+
+  const name = `${schema}.${table}`;
+  const queryText = `
+        drop trigger if exists ${schema}_${table}_changed_trigger on ${name};
+      `;
+  try {
+    await client.query(queryText);
+  } catch (error) {
+    logger.error(`removeTrigger failed ${error}`);
+    throw error;
+  }
+}
 
 async function dbTriggerRegistration(): Promise<Observable<Counter>> {
   const azurePrimaryDbConfig = {

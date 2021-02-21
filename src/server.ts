@@ -3,7 +3,12 @@ import schemas from './graphql/schema';
 import express from 'express';
 import http from 'http';
 import { ApolloServer } from 'apollo-server-express';
-import { wsNotify } from './counter/trigger/trigger';
+import {
+  wsNotify,
+  createTriggerFunction,
+  createTrigger,
+  removeTrigger,
+} from './db/trigger/trigger';
 import { Injector } from './utils/injector';
 import { Database } from './db/connection/connection';
 import { PRIMARY_DB_CONFIG } from './config';
@@ -38,6 +43,14 @@ import { hashObject } from './diff/node-object-hash';
     logger.info(resbh);
 
     logger.info(`equal = ${resah === resbh}`);
+
+    const schema = 'schema1';
+    const table = 'book';
+    await createTriggerFunction(schema, table);
+    logger.info(`created trigger function for ${schema}.${table}`);
+    await removeTrigger(schema, table);
+    await createTrigger(schema, table);
+    logger.info(`created trigger for ${schema}.${table}`);
   } catch (error) {
     logger.error(`error in init ${error}`);
   }

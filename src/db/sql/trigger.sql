@@ -1,3 +1,20 @@
+create or replace function schema1.notify_book()
+	returns trigger
+	language plpgsql as $function$
+	begin
+		perform pg_notify('book changed', '');
+		return NULL;
+	end;
+$function$
+
+drop trigger if exists book_changed_trigger on schema1.book;
+
+create trigger book_changed_trigger after insert or update or delete on schema1.book 
+for each row execute procedure schema1.notify_book();
+
+
+-- ********************
+
 create or replace function trigger.notify_testevent()
 	returns trigger
 	language plpgsql
@@ -8,8 +25,7 @@ begin
 end;
 $function$
 
-create trigger updated_test_trigger after insert on trigger.data 
-for each row execute procedure trigger.notify_testevent();
+
 
 insert into trigger.data (name) values ('eyal')
 
