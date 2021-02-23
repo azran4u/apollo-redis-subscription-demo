@@ -7,7 +7,8 @@ import {
   wsNotify,
   createTriggerFunction,
   createTrigger,
-  removeTrigger,
+  removeTriggerIfExists,
+  tableChangedNotification,
 } from './db/trigger/trigger';
 import { Injector } from './utils/injector';
 import { Database } from './db/connection/connection';
@@ -16,6 +17,7 @@ import { createMockData } from './db/mock/createMockData';
 import { saveMockDataToDb } from './db/mock/saveMockDataToDb';
 import { getRedaersWithBooksAndAuthorsInTimeFrame } from './db/read/getRedaersWithBooksAndAuthorsInTimeFrame';
 import { hashObject } from './diff/node-object-hash';
+import { tap } from 'rxjs/operators';
 
 (async () => {
   try {
@@ -48,9 +50,25 @@ import { hashObject } from './diff/node-object-hash';
     const table = 'book';
     await createTriggerFunction(schema, table);
     logger.info(`created trigger function for ${schema}.${table}`);
-    await removeTrigger(schema, table);
+    await removeTriggerIfExists(schema, table);
     await createTrigger(schema, table);
     logger.info(`created trigger for ${schema}.${table}`);
+
+    const tableChanged$ = await tableChangedNotification(
+      schema,
+      table,
+    );
+    const tableChangedSubscription = tableChanged$
+      .pipe(
+        tap(() => {
+          logger.info(`table ${schema} ${table} changed`);
+        }),
+      )
+      .subscribe();
+    setTimeout(() => {
+      tableChangedSubscription.unsubscribe();
+      logger.info(`unsubscribed from trigger ${schema} ${table}`);
+    }, 5000);
   } catch (error) {
     logger.error(`error in init ${error}`);
   }

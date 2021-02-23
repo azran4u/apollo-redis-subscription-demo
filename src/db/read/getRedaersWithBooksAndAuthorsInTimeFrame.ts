@@ -54,7 +54,7 @@ export async function getRedaersWithBooksAndAuthorsInTimeFrame(
         left join schema1.author on (schema1.author.id = readersbooksauthorid.author_id)
         order by reader_name, book_title, author_name
       `;
-  const vars = ['2019-01-01', '2020-01-01'];
+  const vars = [range.from.toISOString(), range.to.toISOString()];
   try {
     const res = await client.query(queryText, vars);
     return res.rows.map((row) => {

@@ -36,25 +36,34 @@ export async function createTriggerFunction(
   }
 }
 
-export async function createTrigger(schema: string, table: string) {
+// returns the created trigger name
+export async function createTrigger(
+  schema: string,
+  table: string,
+): Promise<string> {
   const client = Injector.getInstance()
     .getService<Database>(Database)
     .getClient();
 
+  const triggerName = `${schema}_${table}_changed_trigger`;
   const name = `${schema}.${table}`;
   const queryText = `
-        create trigger ${schema}_${table}_changed_trigger after insert or update or delete on ${name} 
+        create trigger ${triggerName} after insert or update or delete on ${name} 
         for each row execute procedure ${name}_notify();
       `;
   try {
     await client.query(queryText);
+    return triggerName;
   } catch (error) {
     logger.error(`createTrigger failed ${queryText} ${error}`);
     throw error;
   }
 }
 
-export async function removeTrigger(schema: string, table: string) {
+export async function removeTriggerIfExists(
+  schema: string,
+  table: string,
+) {
   const client = Injector.getInstance()
     .getService<Database>(Database)
     .getClient();
@@ -69,6 +78,31 @@ export async function removeTrigger(schema: string, table: string) {
     logger.error(`removeTrigger failed ${error}`);
     throw error;
   }
+}
+
+export async function tableChangedNotification(
+  schema: string,
+  table: string,
+): Promise<Observable<void>> {
+  const client = Injector.getInstance()
+    .getService<Database>(Database)
+    .getClient();
+
+  const triggerName = `${schema}_${table}_changed_trigger`;
+  try {
+    await client.query(`LISTEN ${triggerName}`);
+  } catch (error) {
+    logger.error(`failed listening to trigger ${triggerName}`);
+  }
+
+  return new Observable((subscriber) => {
+    client.on('notification', async (msg) => {
+      const data = msg.payload;
+      const channel = msg.channel;
+      const processId = msg.processId;
+      subscriber.next();
+    });
+  });
 }
 
 async function dbTriggerRegistration(): Promise<Observable<Counter>> {
