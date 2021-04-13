@@ -44,7 +44,7 @@ describe(`Grpahql API testing`, () => {
     userControllerGetAllStub.restore();
   });
 
-  it('add user', async () => {
+  it('create user', async () => {
     const mockUser = aUser('1');
     const userControllerAddUserStub = sinon.stub(
       UserController,
