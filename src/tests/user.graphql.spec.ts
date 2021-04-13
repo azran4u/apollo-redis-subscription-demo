@@ -1,10 +1,10 @@
-import { ApolloServer } from 'apollo-server-express';
+import { gql } from 'apollo-server-express';
 import { createTestClient } from 'apollo-server-testing';
-import { userSchema } from '../user/schema/user.schema';
 import { UserController } from '../user/controller/user.controller';
 import { User } from '../user/user.model';
-import sinon from 'sinon';
+import sinon, { mock, SinonStub } from 'sinon';
 import { expect } from 'chai';
+import { apolloServer } from '../graphql/apolloServer';
 
 function aUser(id: string): User {
   return {
@@ -15,27 +15,60 @@ function aUser(id: string): User {
 
 describe(`Grpahql API testing`, () => {
   const users: User[] = [aUser('1'), aUser('2')];
-  let userControllerGetAllStub;
 
-  beforeEach(function () {
-    userControllerGetAllStub = sinon.stub(UserController, 'getAll');
-  });
+  beforeEach(function () {});
 
-  afterEach(function () {
+  afterEach(function () {});
+
+  it('fetch all users', async () => {
+    const userControllerGetAllStub = sinon.stub(
+      UserController,
+      'getAll',
+    );
+    userControllerGetAllStub.returns(Promise.resolve(users));
+    const { query } = createTestClient(apolloServer);
+    const GET_ALL_USERS = gql`
+      query q1 {
+        getAllUsers {
+          id
+          name
+        }
+      }
+    `;
+
+    const res = await query({ query: GET_ALL_USERS, variables: {} });
+
+    expect(res.data.getAllUsers).to.eql(users);
+    expect(userControllerGetAllStub.calledOnce).to.be.true;
+
     userControllerGetAllStub.restore();
   });
 
-  it('fetch all users', async () => {
-    userControllerGetAllStub.returns(Promise.resolve(users));
+  it('add user', async () => {
+    const mockUser = aUser('1');
+    const userControllerAddUserStub = sinon.stub(
+      UserController,
+      'create',
+    );
+    userControllerAddUserStub.returns(Promise.resolve(mockUser));
+    const { query } = createTestClient(apolloServer);
+    const ADD_USER = gql`
+      mutation m1($name: String!) {
+        addUser(name: $name) {
+          id
+          name
+        }
+      }
+    `;
 
-    const server = new ApolloServer({
-      schema: userSchema,
+    const res = await query({
+      query: ADD_USER,
+      variables: { name: mockUser.name },
     });
 
-    const { query } = createTestClient(server);
+    expect(res.data.addUser).to.eql(mockUser);
+    expect(userControllerAddUserStub.calledOnce).to.be.true;
 
-    const res = await query({ query: 'getAllUsers', variables: {} });
-
-    expect(res).to.eq(users);
+    userControllerAddUserStub.restore();
   });
 });
