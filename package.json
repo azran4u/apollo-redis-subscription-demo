@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "apollo graphql server with redis based subscription",
   "main": "/dist/server.js",
+  "engines": { "node" : "14.16.1" },
   "scripts": {
     "start": "npm run build && npn run start:prod",
     "start:primary": "cross-env GRAPHQL_PORT=4001 DB_NAME=PRIMARY node dist/server.js",
