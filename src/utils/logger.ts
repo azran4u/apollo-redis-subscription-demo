@@ -27,10 +27,6 @@ export const logger = createLogger({
           ? PROD_LOG_LEVEL
           : DEV_LOG_LEVEL,
     }),
-    new transports.File({
-      filename: 'logs/error.log',
-      level: LOG_FILE,
-    }),
   ],
 });
 

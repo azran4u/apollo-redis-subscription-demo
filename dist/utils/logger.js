@@ -23,10 +23,6 @@ exports.logger = winston_1.createLogger({
                 ? PROD_LOG_LEVEL
                 : DEV_LOG_LEVEL,
         }),
-        new winston_1.transports.File({
-            filename: 'logs/error.log',
-            level: LOG_FILE,
-        }),
     ],
 });
 if (process.env.NODE_ENV !== 'production') {
