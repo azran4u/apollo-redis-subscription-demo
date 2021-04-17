@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("./utils");
 const app_1 = require("./app");
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const PORT = +process.env.PORT || 4000;
+    const PORT = 8080;
     const { httpServer, apolloServer } = yield app_1.startExpressServer();
     httpServer.listen(PORT, () => {
         utils_1.logger.info(`🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`);
