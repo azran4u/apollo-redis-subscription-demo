@@ -7,7 +7,7 @@
     "start": "npm run build && npn run start:prod",
     "start:primary": "cross-env GRAPHQL_PORT=4001 DB_NAME=PRIMARY node dist/server.js",
     "start:secondary": "cross-env GRAPHQL_PORT=4002 DB_NAME=SECONDARY node dist/server.js",
-    "start:prod": "node dist/server.js",
+    "deploy": "node dist/server.js",
     "build": "tsc",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
     "test": "mocha -r ts-node/register 'src/tests/**/*.ts'"
