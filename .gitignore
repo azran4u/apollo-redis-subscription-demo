@@ -9,7 +9,8 @@ tmpnodejsnpm-cache
 .npm
 
 # js files
-dist/
+# dist/
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
