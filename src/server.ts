@@ -2,7 +2,7 @@ import { logger } from './utils';
 import { startExpressServer } from './app';
 
 (async () => {
-  const PORT = 8080;
+  const PORT = 8090;
   const { httpServer, apolloServer } = await startExpressServer();
   httpServer.listen(PORT, () => {
     logger.info(

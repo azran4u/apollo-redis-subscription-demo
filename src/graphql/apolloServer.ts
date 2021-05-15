@@ -1,14 +1,17 @@
-import { ApolloServer } from "apollo-server-express";
-import schemas from "./schema";
+import { ApolloServer } from 'apollo-server-express';
+import schemas from './schema';
 
+let numOfConnectedWs = 0;
 export const apolloServer = new ApolloServer({
-    schema: schemas,
-    subscriptions: {
-      onConnect: (connectionParams, webSocket, context) => {
-        console.log(`ws connected`);
-      },
-      onDisconnect: (webSocket, context) => {
-        console.log(`ws disconnected`);
-      },
+  schema: schemas,
+  subscriptions: {
+    onConnect: (connectionParams, webSocket, context) => {
+      numOfConnectedWs++;
+      console.log(`ws connected, current ${numOfConnectedWs}`);
     },
-  });
+    onDisconnect: (webSocket, context) => {
+      numOfConnectedWs--;
+      console.log(`ws disconnected, current ${numOfConnectedWs}`);
+    },
+  },
+});

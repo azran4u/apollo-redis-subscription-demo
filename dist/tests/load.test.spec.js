@@ -9,54 +9,64 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const apollo_server_1 = require("apollo-server");
-const utilities_1 = require("@apollo/client/utilities");
-const ws_1 = require("@apollo/client/link/ws");
-const core_1 = require("@apollo/client/core");
-const httpLink = new core_1.HttpLink({
-    uri: 'http://localhost:4000/graphql',
-});
-const wsLink = new ws_1.WebSocketLink({
-    uri: 'ws://localhost:4000/subscriptions',
-    options: {
-        reconnect: true,
-        connectionParams: {
-            authToken: 'a',
-        },
-    },
-});
-const splitLink = core_1.split(({ query }) => {
-    const definition = utilities_1.getMainDefinition(query);
-    return (definition.kind === 'OperationDefinition' &&
-        definition.operation === 'subscription');
-}, wsLink, httpLink);
-const client = new core_1.ApolloClient({
-    link: splitLink,
-    cache: new core_1.InMemoryCache(),
-});
-const COMMENTS_SUBSCRIPTION = apollo_server_1.gql `
-  subscription OnCommentAdded($postID: ID!) {
-    commentAdded(postID: $postID) {
-      id
-      content
-    }
-  }
-`;
-// client.
-// const { variables, loading, data, error } = useSubscription(
-//   COMMENTS_SUBSCRIPTION,
-//   {
-//     onSubscriptionData: ({ client, subscriptionData }) => {
-//       debugger;
-//     },
-//     onSubscriptionComplete: () => {
-//       debugger;
-//     },
-//   },
-// );
+const graphql_tag_1 = require("graphql-tag");
+// import { getMainDefinition } from '@apollo/client/utilities';
+// import {
+//   split,
+//   HttpLink,
+//   ApolloClient,
+//   InMemoryCache,
+//   Observable,
+// } from '@apollo/client/core';
+// import fetch from 'cross-fetch';
+// import { execute } from 'apollo-link';
+// import { WebSocketLink } from 'apollo-link-ws';
+// import { SubscriptionClient } from 'subscriptions-transport-ws';
+// import ws from 'ws';
+const graphqlClient_1 = require("../graphql/graphqlClient");
 describe(`load testing`, () => {
     beforeEach(function () { });
     afterEach(function () { });
-    it('load counter subscription', () => __awaiter(void 0, void 0, void 0, function* () { }));
+    const url = 'ws://localhost:8090/graphql';
+    const COUNTER_SUBSCRIPTION = graphql_tag_1.gql `
+    subscription s1 {
+      counterChanged {
+        value
+      }
+    }
+  `;
+    it('load counter subscription', () => __awaiter(void 0, void 0, void 0, function* () {
+        const graphqlClient = new graphqlClient_1.GraphqlClient(url);
+        const res$ = graphqlClient.connect(COUNTER_SUBSCRIPTION);
+        res$.subscribe((data) => {
+            debugger;
+            console.log(`data recieved ${data.data.counterChanged}`);
+        }, (error) => {
+            console.error(`ws error ${error}`);
+        });
+        setTimeout(() => {
+            graphqlClient.close();
+            console.log(`ws disconnected`);
+        }, 10000);
+    }));
+    it.only('load counter subscription', () => __awaiter(void 0, void 0, void 0, function* () {
+        const numOfSubscribers = 10;
+        const graphqlClients = [];
+        for (let i = 0; i < numOfSubscribers; i++) {
+            const graphqlClient = new graphqlClient_1.GraphqlClient(url);
+            graphqlClients.push(graphqlClient);
+            graphqlClient.connect(COUNTER_SUBSCRIPTION).subscribe((data) => {
+                console.log(`data recieved ${data.data.counterChanged.value}`);
+            }, (error) => {
+                console.error(`ws error ${error}`);
+            });
+        }
+        // setTimeout(() => {
+        //   graphqlClients.map((graphqlClient) => {
+        //     graphqlClient.close();
+        //   });
+        //   console.log(`unsubscribe`);
+        // }, 10000);
+    }));
 });
 //# sourceMappingURL=load.test.spec.js.map
