@@ -11,7 +11,7 @@ export const pubsub = new RedisPubSub({
 function reviver(key, value): any {
   if (key === 'userAdded') {
     const user: User = value;
-    user.age += 10;
+    user.age += 0;
     return user;
   }
   return value;
