@@ -16,7 +16,7 @@ const user_events_1 = require("../controller/user.events");
 exports.changeUsers = (source, args, context, info) => __awaiter(void 0, void 0, void 0, function* () {
     const { upserted, deleted } = args;
     for (let i = 0; i < deleted.length; i++) {
-        yield user_controller_1.UserController.remove(deleted[i].id);
+        yield user_controller_1.UserController.remove(deleted[i]);
     }
     for (let i = 0; i < upserted.length; i++) {
         yield user_controller_1.UserController.create(upserted[i]);
@@ -24,11 +24,8 @@ exports.changeUsers = (source, args, context, info) => __awaiter(void 0, void 0,
     const upsertedIds = upserted.map((upsert) => {
         return upsert.id;
     });
-    const deleteddIds = deleted.map((d) => {
-        return d.id;
-    });
     yield pubsub_1.pubsub.publish(user_events_1.UserEvents.USERS_CHANGED, {
-        usersChanged: { updated: upsertedIds, deleted: deleteddIds },
+        usersChanged: { updated: upsertedIds, deleted },
     });
     return true;
 });
