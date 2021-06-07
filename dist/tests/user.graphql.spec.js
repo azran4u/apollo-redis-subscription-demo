@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const apollo_server_express_1 = require("apollo-server-express");
 const apollo_server_testing_1 = require("apollo-server-testing");
-const user_controller_1 = require("../user/controller/user.controller");
+const user_controller_1 = require("../entities/blog/user/controller/user.controller");
 const sinon_1 = __importDefault(require("sinon"));
 const chai_1 = require("chai");
 const apolloServer_1 = require("../graphql/apolloServer");
@@ -22,6 +22,8 @@ function aUser(id) {
     return {
         id,
         name: `name-${id}`,
+        age: 10,
+        posts: [],
     };
 }
 describe(`Grpahql API testing`, () => {

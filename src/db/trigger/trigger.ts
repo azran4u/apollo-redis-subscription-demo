@@ -1,11 +1,11 @@
 import { Client } from 'pg';
 import { logger, Injector } from '../../utils';
-import { counterController } from '../../counter/controller/counter.controller';
-import pubsub from '../../counter/resolvers/pubsub';
+import { counterController } from '../../entities/counter/controller/counter.controller';
+import pubsub from '../../entities/counter/resolvers/pubsub';
 import { Observable } from 'rxjs';
-import { Counter } from '../../counter/counter.model';
+import { Counter } from '../../entities/counter/counter.model';
 import { debounceTime, tap } from 'rxjs/operators';
-import { COUNTER_CHNAGED } from '../../counter/resolvers/subscription.events';
+import { COUNTER_CHNAGED } from '../../entities/counter/resolvers/subscription.events';
 import { Database } from '../connection';
 
 export async function createTriggerFunction(

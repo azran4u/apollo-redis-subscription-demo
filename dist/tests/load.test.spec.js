@@ -52,7 +52,7 @@ describe(`load testing`, () => {
     it.only('load counter subscription', () => __awaiter(void 0, void 0, void 0, function* () {
         const numOfSubscribers = 10;
         const graphqlClients = [];
-        for (let i = 0; i < numOfSubscribers; i++) {
+        for (let i = 1; i <= numOfSubscribers; i++) {
             const graphqlClient = new graphqlClient_1.GraphqlClient(url);
             graphqlClients.push(graphqlClient);
             graphqlClient.connect(COUNTER_SUBSCRIPTION).subscribe((data) => {
@@ -60,13 +60,11 @@ describe(`load testing`, () => {
             }, (error) => {
                 console.error(`ws error ${error}`);
             });
+            setTimeout(() => {
+                graphqlClient.close();
+                console.log(`unsubscribe`);
+            }, 1000 * i);
         }
-        // setTimeout(() => {
-        //   graphqlClients.map((graphqlClient) => {
-        //     graphqlClient.close();
-        //   });
-        //   console.log(`unsubscribe`);
-        // }, 10000);
     }));
 });
 //# sourceMappingURL=load.test.spec.js.map

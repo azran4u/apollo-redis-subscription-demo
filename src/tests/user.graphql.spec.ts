@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-express';
 import { createTestClient } from 'apollo-server-testing';
-import { UserController } from '../user/controller/user.controller';
-import { User } from '../user/user.model';
+import { UserController } from '../entities/blog/user/controller/user.controller';
+import { User } from '../entities/blog/user/user.model';
 import sinon, { mock, SinonStub } from 'sinon';
 import { expect } from 'chai';
 import { apolloServer } from '../graphql/apolloServer';
@@ -10,6 +10,8 @@ function aUser(id: string): User {
   return {
     id,
     name: `name-${id}`,
+    age: 10,
+    posts: [],
   };
 }
 

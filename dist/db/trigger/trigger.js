@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.wsNotify = exports.tableChangedNotification = exports.removeTriggerIfExists = exports.createTrigger = exports.createTriggerFunction = void 0;
 const pg_1 = require("pg");
 const utils_1 = require("../../utils");
-const counter_controller_1 = require("../../counter/controller/counter.controller");
-const pubsub_1 = __importDefault(require("../../counter/resolvers/pubsub"));
+const counter_controller_1 = require("../../entities/counter/controller/counter.controller");
+const pubsub_1 = __importDefault(require("../../entities/counter/resolvers/pubsub"));
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
-const subscription_events_1 = require("../../counter/resolvers/subscription.events");
+const subscription_events_1 = require("../../entities/counter/resolvers/subscription.events");
 const connection_1 = require("../connection");
 function createTriggerFunction(schema, table) {
     return __awaiter(this, void 0, void 0, function* () {
