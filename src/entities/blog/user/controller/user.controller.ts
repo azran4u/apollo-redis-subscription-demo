@@ -1,7 +1,8 @@
 import { User, UserInput } from '../user.model';
 import { v4 as uuidv4 } from 'uuid';
 import { UserInputError } from 'apollo-server';
-
+import { UserEvents } from './user.events';
+import { pubsub } from '../../../../pubsub/pubsub';
 export class UserController {
   constructor() {}
 
@@ -17,6 +18,15 @@ export class UserController {
       ...input,
     };
     this.users.push(user);
+    try {
+      await pubsub.publish(UserEvents.USER_CREATED, {
+        userAdded: user,
+      });
+    } catch (error) {
+      console.error(
+        `failed to publish event ${UserEvents.USER_CREATED} to pubsub ${error}`,
+      );
+    }
     return user;
   }
 

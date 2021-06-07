@@ -1,8 +1,9 @@
-import { IResolvers } from "graphql-tools";
-import { removeUser } from "./mutation.removeUser.resolver";
-import { addUser } from "./mutation.addUser.resolver";
-import { getAllUsers } from "./query.getAllUsers.resolver";
-import { editUser } from "./mutation.editUser.resolver";
+import { IResolvers } from 'graphql-tools';
+import { removeUser } from './mutation.removeUser.resolver';
+import { addUser } from './mutation.addUser.resolver';
+import { getAllUsers } from './query.getAllUsers.resolver';
+import { editUser } from './mutation.editUser.resolver';
+import { userAddedSubscription } from './subscription.user.added';
 
 const userResolver: IResolvers = {
   Query: {
@@ -12,6 +13,9 @@ const userResolver: IResolvers = {
     addUser,
     removeUser,
     editUser,
+  },
+  Subscription: {
+    userAdded: userAddedSubscription,
   },
 };
 
