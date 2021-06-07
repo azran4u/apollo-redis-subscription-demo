@@ -7,6 +7,7 @@ const userMutation = apollo_server_1.gql `
     addUser(user: UserInput!): User
     removeUser(id: ID!): User
     editUser(id: ID!, user: UserInput!): User
+    changeUsers(upserted: [UserInput]!, deleted: [ID]!): Boolean!
   }
 `;
 exports.userMutation = userMutation;

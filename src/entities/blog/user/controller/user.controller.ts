@@ -44,6 +44,9 @@ export class UserController {
     if (index > -1) {
       this.users.splice(index, 1);
     }
+    await pubsub.publish(UserEvents.USER_DELETED, {
+      userDeleted: user,
+    });
     return user;
   }
 

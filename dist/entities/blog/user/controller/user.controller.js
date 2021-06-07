@@ -52,6 +52,9 @@ class UserController {
             if (index > -1) {
                 this.users.splice(index, 1);
             }
+            yield pubsub_1.pubsub.publish(user_events_1.UserEvents.USER_DELETED, {
+                userDeleted: user,
+            });
             return user;
         });
     }

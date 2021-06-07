@@ -14,7 +14,7 @@ exports.pubsub = new graphql_redis_subscriptions_1.RedisPubSub({
 function reviver(key, value) {
     if (key === 'userAdded') {
         const user = value;
-        user.age += 10;
+        user.age += 0;
         return user;
     }
     return value;

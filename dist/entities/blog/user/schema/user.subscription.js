@@ -5,6 +5,8 @@ const apollo_server_1 = require("apollo-server");
 const userSubscription = apollo_server_1.gql `
   type Subscription {
     userAdded(fromAge: Int!, toAge: Int!): User
+    userDeleted: User
+    usersChanged: UserUpdate
   }
 `;
 exports.userSubscription = userSubscription;
