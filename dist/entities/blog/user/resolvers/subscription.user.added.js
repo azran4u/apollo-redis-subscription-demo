@@ -8,7 +8,7 @@ exports.userAddedSubscription = {
     subscribe: apollo_server_1.withFilter(() => pubsub_1.pubsub.asyncIterator(user_events_1.UserEvents.USER_CREATED), (rootValue, args, context, info) => {
         debugger;
         const user = rootValue.userAdded;
-        if (user.age >= args.fromAge && user.age <= args.toAge)
+        if (user.age >= args.age.from && user.age <= args.age.to)
             return true;
         else {
             return false;

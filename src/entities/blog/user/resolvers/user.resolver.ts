@@ -5,8 +5,8 @@ import { getAllUsers } from './query.getAllUsers.resolver';
 import { editUser } from './mutation.editUser.resolver';
 import { userAddedSubscription } from './subscription.user.added';
 import { userDeletedSubscription } from './subscription.user.deleted';
-import { usersChangedSubscription } from './subscription.usersChanged';
 import { changeUsers } from './mutation.changeUsers.resolver';
+import { usersChangesSubscription } from './subscription.usersChanged';
 
 const userResolver: IResolvers = {
   Query: {
@@ -21,7 +21,7 @@ const userResolver: IResolvers = {
   Subscription: {
     userAdded: userAddedSubscription,
     userDeleted: userDeletedSubscription,
-    usersChanged: usersChangedSubscription,
+    usersChanges: usersChangesSubscription,
   },
 };
 

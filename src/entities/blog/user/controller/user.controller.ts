@@ -6,10 +6,10 @@ import { pubsub } from '../../../../pubsub/pubsub';
 export class UserController {
   constructor() {}
 
-  private static users: User[] = [];
+  private static users = new Map<string, User>();
 
   public static async getAll(): Promise<User[]> {
-    return this.users;
+    return Array.from(this.users.values());
   }
 
   public static async create(input: UserInput): Promise<User> {
@@ -17,7 +17,7 @@ export class UserController {
       id: uuidv4(),
       ...input,
     };
-    this.users.push(user);
+    this.users.set(user.id, user);
     try {
       await pubsub.publish(UserEvents.USER_CREATED, {
         userAdded: user,
@@ -31,40 +31,27 @@ export class UserController {
   }
 
   public static async findById(id: string): Promise<User> {
-    return this.users.find((user) => {
-      user.id === id;
-    });
+    return this.users.get(id);
   }
 
   public static async remove(id: string): Promise<User> {
-    const index = this.users.findIndex((user) => {
-      return id === user.id;
-    });
-    const user = this.users[index];
-    if (index > -1) {
-      this.users.splice(index, 1);
+    const user = this.users.get(id);
+    if (user) {
+      this.users.delete(id);
+      await pubsub.publish(UserEvents.USER_DELETED, {
+        userDeleted: user,
+      });
+      return user;
     }
-    await pubsub.publish(UserEvents.USER_DELETED, {
-      userDeleted: user,
-    });
-    return user;
+    return null;
   }
 
   public static async edit(
     id: string,
     updatedUser: UserInput,
   ): Promise<User> {
-    const index = this.users.findIndex((user) => {
-      return id === user.id;
-    });
-    if (index > -1) {
-      this.users[index] = { id, ...updatedUser };
-      return this.users[index];
-    } else {
-      console.error(`can't edit user ${JSON.stringify(updatedUser)}`);
-      throw new UserInputError('edit user arguments invalid', {
-        invalidArgs: updatedUser,
-      });
-    }
+    const user = { id, ...updatedUser };
+    this.users.set(id, user);
+    return user;
   }
 }

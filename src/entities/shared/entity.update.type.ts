@@ -1,10 +1,10 @@
 import { gql } from 'apollo-server';
 
-const userUpdateType = gql`
-  type UserUpdate {
+const entityUpdateType = gql`
+  type EntityUpdate {
     updated: [ID]!
     deleted: [ID]!
   }
 `;
 
-export { userUpdateType };
+export { entityUpdateType };

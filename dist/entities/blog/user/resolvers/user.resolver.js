@@ -7,8 +7,8 @@ const query_getAllUsers_resolver_1 = require("./query.getAllUsers.resolver");
 const mutation_editUser_resolver_1 = require("./mutation.editUser.resolver");
 const subscription_user_added_1 = require("./subscription.user.added");
 const subscription_user_deleted_1 = require("./subscription.user.deleted");
-const subscription_usersChanged_1 = require("./subscription.usersChanged");
 const mutation_changeUsers_resolver_1 = require("./mutation.changeUsers.resolver");
+const subscription_usersChanged_1 = require("./subscription.usersChanged");
 const userResolver = {
     Query: {
         getAllUsers: query_getAllUsers_resolver_1.getAllUsers,
@@ -22,7 +22,7 @@ const userResolver = {
     Subscription: {
         userAdded: subscription_user_added_1.userAddedSubscription,
         userDeleted: subscription_user_deleted_1.userDeletedSubscription,
-        usersChanged: subscription_usersChanged_1.usersChangedSubscription,
+        usersChanges: subscription_usersChanged_1.usersChangesSubscription,
     },
 };
 exports.userResolver = userResolver;

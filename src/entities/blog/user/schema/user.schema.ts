@@ -4,8 +4,12 @@ import { userType, userQuery } from '.';
 import { userResolver } from '../resolvers/user.resolver';
 import { userInput } from './user.input.type';
 import { userMutation } from './user.mutation';
-import { userSubscription } from './user.subscription';
-import { userUpdateType } from './user.update.type';
+import {
+  intRange,
+  userSubscription,
+  userSubscriptionFilter,
+} from './user.subscription';
+import { entityUpdateType } from '../../../shared/entity.update.type';
 
 const userSchema: GraphQLSchema = makeExecutableSchema({
   typeDefs: [
@@ -14,9 +18,11 @@ const userSchema: GraphQLSchema = makeExecutableSchema({
     userQuery,
     userMutation,
     userSubscription,
-    userUpdateType,
+    entityUpdateType,
+    userSubscriptionFilter,
+    intRange,
   ],
-  resolvers: userResolver,
+  resolvers: [userResolver],
 });
 
 export { userSchema };

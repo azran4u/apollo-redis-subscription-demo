@@ -12,6 +12,7 @@
         "@apollo/client": "^3.3.18",
         "@types/chai": "^4.2.16",
         "@types/ioredis": "^4.26.4",
+        "@types/lodash": "^4.14.170",
         "@types/mocha": "^8.2.2",
         "@types/sinon": "^9.0.11",
         "apollo-client": "^2.6.10",
@@ -32,6 +33,7 @@
         "graphql-subscriptions": "^1.2.1",
         "graphql-tools": "^4.0.8",
         "ioredis": "^4.27.5",
+        "lodash": "^4.17.21",
         "mocha": "^8.3.2",
         "node-object-hash": "^2.3.1",
         "object-hash": "^2.1.1",
@@ -459,6 +461,11 @@
       "dependencies": {
         "@types/koa": "*"
       }
+    },
+    "node_modules/@types/lodash": {
+      "version": "4.14.170",
+      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.170.tgz",
+      "integrity": "sha512-bpcvu/MKHHeYX+qeEN8GE7DIravODWdACVA1ctevD8CN24RhPZIKMn9ntfAsrvLfSX3cR5RrBKAbYm9bGs0A+Q=="
     },
     "node_modules/@types/long": {
       "version": "4.0.1",
@@ -2901,6 +2908,11 @@
         "url": "https://github.com/sponsors/sindresorhus"
       }
     },
+    "node_modules/lodash": {
+      "version": "4.17.21",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+      "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
+    },
     "node_modules/lodash.defaults": {
       "version": "4.2.0",
       "resolved": "https://registry.npmjs.org/lodash.defaults/-/lodash.defaults-4.2.0.tgz",
@@ -5325,6 +5337,11 @@
         "@types/koa": "*"
       }
     },
+    "@types/lodash": {
+      "version": "4.14.170",
+      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.170.tgz",
+      "integrity": "sha512-bpcvu/MKHHeYX+qeEN8GE7DIravODWdACVA1ctevD8CN24RhPZIKMn9ntfAsrvLfSX3cR5RrBKAbYm9bGs0A+Q=="
+    },
     "@types/long": {
       "version": "4.0.1",
       "resolved": "https://registry.npmjs.org/@types/long/-/long-4.0.1.tgz",
@@ -7203,6 +7220,11 @@
       "requires": {
         "p-locate": "^5.0.0"
       }
+    },
+    "lodash": {
+      "version": "4.17.21",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+      "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
     },
     "lodash.defaults": {
       "version": "4.2.0",

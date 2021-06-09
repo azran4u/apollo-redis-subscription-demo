@@ -1,4 +1,5 @@
 import { withFilter } from 'apollo-server';
+import { AgeRange } from '../../../../model/ageRange';
 import { pubsub } from '../../../../pubsub/pubsub';
 import { UserEvents } from '../controller/user.events';
 import { User } from '../user.model';
@@ -8,13 +9,13 @@ export const userAddedSubscription = {
     () => pubsub.asyncIterator(UserEvents.USER_CREATED),
     (
       rootValue?: { userAdded: User },
-      args?: { fromAge: number; toAge: number },
+      args?: { age: AgeRange },
       context?: any,
       info?: any,
     ) => {
       debugger;
       const user = rootValue.userAdded;
-      if (user.age >= args.fromAge && user.age <= args.toAge)
+      if (user.age >= args.age.from && user.age <= args.age.to)
         return true;
       else {
         return false;

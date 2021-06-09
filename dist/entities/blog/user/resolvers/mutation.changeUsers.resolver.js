@@ -15,18 +15,24 @@ const pubsub_1 = require("../../../../pubsub/pubsub");
 const user_events_1 = require("../controller/user.events");
 exports.changeUsers = (source, args, context, info) => __awaiter(void 0, void 0, void 0, function* () {
     const { upserted, deleted } = args;
+    const res = {
+        usersChanges: { updated: [], deleted: [] },
+    };
     for (let i = 0; i < deleted.length; i++) {
-        yield user_controller_1.UserController.remove(deleted[i]);
+        const id = deleted[i];
+        const user = yield user_controller_1.UserController.findById(id);
+        if (user) {
+            yield user_controller_1.UserController.remove(deleted[i]);
+            res.usersChanges.deleted.push({ id, age: user.age });
+        }
     }
     for (let i = 0; i < upserted.length; i++) {
         yield user_controller_1.UserController.create(upserted[i]);
     }
-    const upsertedIds = upserted.map((upsert) => {
-        return upsert.id;
+    res.usersChanges.updated = upserted.map((upsert) => {
+        return { id: upsert.id, age: upsert.age };
     });
-    yield pubsub_1.pubsub.publish(user_events_1.UserEvents.USERS_CHANGED, {
-        usersChanged: { updated: upsertedIds, deleted },
-    });
+    yield pubsub_1.pubsub.publish(user_events_1.UserEvents.USERS_CHANGED, res);
     return true;
 });
 //# sourceMappingURL=mutation.changeUsers.resolver.js.map
