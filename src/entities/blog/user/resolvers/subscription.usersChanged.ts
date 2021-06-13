@@ -13,22 +13,6 @@ import {
 } from './subscription.update.type';
 import _, { filter } from 'lodash';
 
-// export const usersChangesByIdsSubscription = {
-//   subscribe: withFilter(
-//     () => pubsub.asyncIterator(UserEvents.USERS_CHANGED),
-//     (
-//       rootValue?: {
-//         usersChangesByIds: { updated: string[]; deleted: string[] };
-//       },
-//       args?: any,
-//       context?: any,
-//       info?: any,
-//     ) => {
-//       return true;
-//     },
-//   ),
-// };
-
 export const usersChangesSubscription: IResolverObject = {
   resolve: (
     source: UsersChangesSubscriptionPayload,
@@ -59,6 +43,8 @@ export const usersChangesSubscription: IResolverObject = {
   ),
 };
 
+// filter by ids has priority over filter by age
+// to filter by age, set ids=[]
 function isRelevant(
   payload: UsersChangesSubscriptionPayload,
   args?: UsersChangesSubscriptionFilter,
@@ -66,7 +52,7 @@ function isRelevant(
   const res: UsersChangesSubscriptionPayload = {
     usersChanges: { updated: [], deleted: [] },
   };
-  if (args.filter.ids.length > 0) {
+  if (!_.isEmpty(args.filter.ids)) {
     res.usersChanges.updated = payload.usersChanges.updated.filter(
       (x) => {
         return args.filter.ids.includes(x.id);
@@ -78,9 +64,9 @@ function isRelevant(
       },
     );
   } else if (
-    args.filter.age &&
-    args.filter.age.from &&
-    args.filter.age.to
+    !_.isEmpty(args.filter.age) &&
+    _.isNumber(args.filter.age.from) &&
+    _.isNumber(args.filter.age.to)
   ) {
     res.usersChanges.updated = payload.usersChanges.updated.filter(
       (x) => {

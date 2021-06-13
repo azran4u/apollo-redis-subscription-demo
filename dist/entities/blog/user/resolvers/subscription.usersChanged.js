@@ -1,24 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersChangesSubscription = void 0;
 const apollo_server_1 = require("apollo-server");
 const pubsub_1 = require("../../../../pubsub/pubsub");
 const user_events_1 = require("../controller/user.events");
-// export const usersChangesByIdsSubscription = {
-//   subscribe: withFilter(
-//     () => pubsub.asyncIterator(UserEvents.USERS_CHANGED),
-//     (
-//       rootValue?: {
-//         usersChangesByIds: { updated: string[]; deleted: string[] };
-//       },
-//       args?: any,
-//       context?: any,
-//       info?: any,
-//     ) => {
-//       return true;
-//     },
-//   ),
-// };
+const lodash_1 = __importDefault(require("lodash"));
 exports.usersChangesSubscription = {
     resolve: (source, args, context, info) => {
         const res = isRelevant(source, args);
@@ -32,11 +21,13 @@ exports.usersChangesSubscription = {
             res.usersChanges.updated.length > 0);
     }),
 };
+// filter by ids has priority over filter by age
+// to filter by age, set ids=[]
 function isRelevant(payload, args) {
     const res = {
         usersChanges: { updated: [], deleted: [] },
     };
-    if (args.filter.ids.length > 0) {
+    if (!lodash_1.default.isEmpty(args.filter.ids)) {
         res.usersChanges.updated = payload.usersChanges.updated.filter((x) => {
             return args.filter.ids.includes(x.id);
         });
@@ -44,9 +35,9 @@ function isRelevant(payload, args) {
             return args.filter.ids.includes(x.id);
         });
     }
-    else if (args.filter.age &&
-        args.filter.age.from &&
-        args.filter.age.to) {
+    else if (!lodash_1.default.isEmpty(args.filter.age) &&
+        lodash_1.default.isNumber(args.filter.age.from) &&
+        lodash_1.default.isNumber(args.filter.age.to)) {
         res.usersChanges.updated = payload.usersChanges.updated.filter((x) => {
             return (x.age >= args.filter.age.from && x.age <= args.filter.age.to);
         });
