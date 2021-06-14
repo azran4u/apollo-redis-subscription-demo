@@ -40,6 +40,18 @@ class UserController {
             return this.users.get(id);
         });
     }
+    static getByIds(ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = [];
+            ids.map((id) => {
+                const user = this.users.get(id);
+                if (user) {
+                    res.push(user);
+                }
+            });
+            return res;
+        });
+    }
     static remove(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = this.users.get(id);

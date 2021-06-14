@@ -34,6 +34,17 @@ export class UserController {
     return this.users.get(id);
   }
 
+  public static async getByIds(ids: string[]): Promise<User[]> {
+    const res: User[] = [];
+    ids.map((id) => {
+      const user = this.users.get(id);
+      if (user) {
+        res.push(user);
+      }
+    });
+    return res;
+  }
+
   public static async remove(id: string): Promise<User> {
     const user = this.users.get(id);
     if (user) {

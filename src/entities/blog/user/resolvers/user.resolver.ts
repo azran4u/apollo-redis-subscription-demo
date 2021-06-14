@@ -7,10 +7,12 @@ import { userAddedSubscription } from './subscription.user.added';
 import { userDeletedSubscription } from './subscription.user.deleted';
 import { changeUsers } from './mutation.changeUsers.resolver';
 import { usersChangesSubscription } from './subscription.usersChanged';
+import { getUsersByIds } from './query.getUsersByIds.resolver';
 
 const userResolver: IResolvers = {
   Query: {
     getAllUsers,
+    getUsersByIds,
   },
   Mutation: {
     addUser,

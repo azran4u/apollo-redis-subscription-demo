@@ -9,9 +9,11 @@ const subscription_user_added_1 = require("./subscription.user.added");
 const subscription_user_deleted_1 = require("./subscription.user.deleted");
 const mutation_changeUsers_resolver_1 = require("./mutation.changeUsers.resolver");
 const subscription_usersChanged_1 = require("./subscription.usersChanged");
+const query_getUsersByIds_resolver_1 = require("./query.getUsersByIds.resolver");
 const userResolver = {
     Query: {
         getAllUsers: query_getAllUsers_resolver_1.getAllUsers,
+        getUsersByIds: query_getUsersByIds_resolver_1.getUsersByIds,
     },
     Mutation: {
         addUser: mutation_addUser_resolver_1.addUser,

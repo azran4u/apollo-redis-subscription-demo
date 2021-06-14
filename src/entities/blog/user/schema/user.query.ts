@@ -1,8 +1,9 @@
-import { gql } from "apollo-server";
+import { gql } from 'apollo-server';
 
 const userQuery = gql`
   type Query {
-    getAllUsers: [User]
+    getAllUsers: [User]!
+    getUsersByIds(ids: [ID]!): [User]!
   }
 `;
 export { userQuery };
